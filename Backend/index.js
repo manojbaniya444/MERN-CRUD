@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 require("dotenv").config();
 
@@ -7,7 +8,10 @@ require("dotenv").config();
 const workoutRoutes = require("./routes/workoutRoutes");
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = 8080;
+
+// Cross origin patse
+app.use(cors());
 
 // Parser middleware
 app.use(express.json());
@@ -23,7 +27,9 @@ app.use("/api/workouts", workoutRoutes);
 
 // Connect to the database in mongoose
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(
+    "mongodb+srv://manojbaniya444:Suf250000@merncrud.hdan4xs.mongodb.net/?retryWrites=true&w=majority"
+  )
   .then(() => {
     app.listen(PORT, () => {
       console.log(`Server is running on PORT ${PORT}`);

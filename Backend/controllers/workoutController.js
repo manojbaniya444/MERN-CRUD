@@ -13,7 +13,9 @@ const getSingleWorkout = async (req, res) => {
 
   // If id not valid
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(404).json({ error: "invalid object id of mongodb collection" });
+    return res
+      .status(404)
+      .json({ error: "invalid object id of mongodb collection" });
   }
 
   // finding the workout from the database
@@ -39,7 +41,53 @@ const createWorkout = async (req, res) => {
 };
 
 // delete a workout
+const deleteWorkout = async (req, res) => {
+  const { id } = req.params;
+
+  // checking if the id is valid
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(404)
+      .json({ error: "invalid object id of mongodb collection" });
+  }
+
+  const workout = await Workout.findOneAndDelete({ _id: id });
+  if (!workout) {
+    return res.status(400).json({ error: "Workout not found on database." });
+  }
+
+  res.status(200).json(workout);
+};
 
 // update a workout
 
-module.exports = { createWorkout, getAllWorkouts, getSingleWorkout };
+const updateWorkout = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res
+      .status(404)
+      .json({ error: "invalid object id of mongodb collection" });
+  }
+
+  const workout = await Workout.findOneAndUpdate(
+    { _id: id },
+    //data to be updated
+    {
+      ...req.body,
+    }
+  );
+
+  if (!workout) {
+    return res.status(400).json({ error: "No workout found." });
+  }
+
+  res.status(200).json(workout);
+};
+
+module.exports = {
+  createWorkout,
+  getAllWorkouts,
+  getSingleWorkout,
+  deleteWorkout,
+  updateWorkout,
+};
